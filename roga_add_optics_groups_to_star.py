@@ -123,6 +123,7 @@ def regroup_particles_within_each_optics_group(df_in):
         for particle_group in particle_group_list:
             particle_index_list = df_tmp[df_tmp['_rlnGroupName'] == particle_group].index
             df_out.loc[particle_index_list, '_rlnGroupName'] = 'group_{:d}'.format(particle_group_id)
+            df_out.loc[particle_index_list, '_rlnGroupNumber'] = particle_group_id
             particle_group_id += 1
 
     return df_out
