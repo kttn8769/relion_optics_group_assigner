@@ -109,6 +109,25 @@ def append_optics_groups_to_particle_dataframe(df_in, optics_group_table):
     return df_out
 
 
+def regroup_particles_within_each_optics_group(df_in):
+    df_out = df_in.copy(deep=True)
+
+    print('Regrouping particles within each optics group....')
+
+    particle_group_id = 1
+    optics_group_list = np.sort(df_out['_rlnOpticsGroup'].unique())
+    for optics_group in optics_group_list:
+        # df_tmp is a shallow copy of df_in
+        df_tmp = df_in[df_in['_rlnOpticsGroup'] == optics_group]
+        particle_group_list = np.sort(df_tmp['_rlnGroupName'].unique())
+        for particle_group in particle_group_list:
+            particle_index_list = df_tmp[df_tmp['_rlnGroupName'] == particle_group].index
+            df_out.loc[particle_index_list, '_rlnGroupName'] = 'group_{:d}'.format(particle_group_id)
+            particle_group_id += 1
+
+    return df_out
+
+
 def create_output_dataframes(input_star_version, df_particles_out, df_optics_in, optics_group_table, image_size):
     # Check the number of particles in each optics group
     optics_groups, counts = np.unique(df_particles_out._rlnOpticsGroup, return_counts=True)
@@ -259,6 +278,8 @@ if __name__ == '__main__':
     optics_group_table = pd.read_csv(args.optics_group_csv)
 
     df_particles_out = append_optics_groups_to_particle_dataframe(df_particles_in, optics_group_table)
+
+    df_particles_out = regroup_particles_within_each_optics_group(df_particles_out)
 
     df_optics_out, df_particles_out = create_output_dataframes(input_star_version, df_particles_out, df_optics_in,
                                                                optics_group_table, args.image_size)
