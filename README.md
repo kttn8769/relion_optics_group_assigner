@@ -32,6 +32,11 @@
 ### Python 3 の場合
 全部最新版で動くと思いますので試してみてください。
 
+## アップデート
+relion_optics_group_assignerのディレクトリ内に移動した後、以下コマンドを実行してください。
+
+`git pull`
+
 ## ヘルプメッセージ
 roga_find_optics_groups.py と roga_add_optics_groups_to_star.py という2つのスクリプトが入っています。
 
