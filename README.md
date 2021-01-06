@@ -1,7 +1,7 @@
 # relion_optics_group_assigner
 ## 概要
 * (step1) EPUで保存されたムービーファイルの名前からoptics groupを見出して、どの画像がどのoptics groupに属するかのテーブルを作成
-* (step2) 任意のparticle.star (run_data.starなど) に対し、step1で作成したテーブルに従って、各単粒子の情報にoptics groupの情報を追記し、data_opticsブロックも追記し、新しいstarファイルとして保存
+* (step2) 任意のparticle.star (run_data.starなど) に対し、step1で作成したテーブルに従って、各単粒子の情報にoptics groupの情報を追記し、各optics groupの中にある異なるparticle groupにユニークなgroup name(_rlnGroupName)を与え、data_opticsブロックも追記し、新しいstarファイルとして保存
 * (step3) 出力されたstarファイルをRELIONでインポートしてctf refineとかでお使いください
 
 ## RELIONバージョン情報
@@ -103,10 +103,7 @@ python roga_add_optics_groups_to_star.py --input_star Refine3D/job020/run_data.s
 
 --save_csv を付けると、出力starファイル名に _optics.csv と _particles.csv が追加されたファイルも保存されます。これらはそれぞれ data_opticsブロックと data_particlesブロックのcsvファイルなので、意図しないことが起きていないか確認をしてください。
 
+RELIONでは、同じparticle group(rlnGroupName)に属する単粒子が異なるoptics groupにまたがって存在することを防ぐ措置がされています。このスクリプトでは、あるoptics groupの中に異なるparticle groupが存在する場合、それらにユニークなparticle groupを割り当てることにより、同じparticle group(rlnGroupName)に属する単粒子が異なるoptics groupにまたがって存在することを防いでいます。この措置により粒子数が極端に少ないparticle groupが出来てしまい、それを同一optics group内の他のparticle groupに統合したい場合は、いったんrefine3dを走らせて各particle groupのスケールファクターを算出した後、particle selectionでregroupを実行してください。
 
 ### (Step3) RELIONでインポートして使う
 生成されたstarファイルをparticle starファイルとしてインポートして、CTF refinementなどでお使いください。
-
-
-
-
